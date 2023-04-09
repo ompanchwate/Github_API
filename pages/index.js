@@ -81,8 +81,8 @@ export default function Home() {
         {/* ALL REPOSITORIES */}
         <div className='flex flex-col mx-10 lg:mx-60 pt-16 pb-10'>
           {allrepos ? <h1 className='uppercase font-bold text-2xl mb-5 text-white'>Repositories</h1> : ""}
-          {allrepos ? Object.keys(allrepos).map((data) => (
-            <Link href={allrepos[data].html_url}>
+          {allrepos ? Object.keys(allrepos).map((data,index) => (
+            <Link key={index} href={allrepos[data].html_url}>
               <div className='bg-gray-600 text-white rounded-lg p-5 mt-2 hover:scale-105 duration-300 '>
                 <h1 className=''><span className='font-bold text-lg'>{Number(data) + 1}. Title : </span> {allrepos[data].name}</h1>
                 <p> <span className='font-bold text-lg'> Description  :</span> {allrepos[data].description}</p>
