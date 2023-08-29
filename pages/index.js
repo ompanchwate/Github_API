@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
@@ -11,8 +10,6 @@ export default function Home() {
   const [starred, setStarred] = useState()
   const [data, setData] = useState()
   const [allrepos, setAllRepos] = useState()
-
-
 
   const fetchData = async () => {
     const res = await fetch('/api/github', {
@@ -42,7 +39,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
 
   const handleClick = async (e) => {

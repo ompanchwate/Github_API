@@ -1,6 +1,6 @@
 const { Octokit } = require('@octokit/rest')
 
-export default async (req, res) => {
+const githubApi = async (req, res) =>{
     const octokit = new Octokit({
         auth: process.env.REACT_APP_GITHUB_AUTH_TOKEN
     });
@@ -20,3 +20,5 @@ export default async (req, res) => {
 
     return res.status(200).json({ username: username, repos: reposCount, followers: followerCount, starred: starredCount, allrepos: repos});
 } 
+
+export default githubApi
