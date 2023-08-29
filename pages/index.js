@@ -1,19 +1,21 @@
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   // const { data } = useSWR('/api/github', fetcher);
-  const [username, setUsername] = useState()
-
+  const [username, setUsername] = useState("ompanchwate")
+  const [username1, setUsername1] = useState()
+  const [repos, setRepos] = useState()
+  const [followers, setFollowers] = useState()
+  const [starred, setStarred] = useState()
   const [data, setData] = useState()
   const [allrepos, setAllRepos] = useState()
 
 
-  const handleClick = async (e) => {
-    console.log(username)
-    e.preventDefault()
-    const res = await fetch('/api/api_github', {
+
+  const fetchData = async () => {
+    const res = await fetch('/api/github', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,7 +26,40 @@ export default function Home() {
     });
 
     const response = await res.json();
-    console.log(response)
+
+    setData({
+      url: response.username.data.html_url,
+      user: response.username.data.name,
+      repos: response.repos,
+      followers: response.followers,
+      starred: response.starred,
+      img: response.username.data.avatar_url,
+      bio: response.username.data.bio
+    });
+
+    setAllRepos(response.allrepos.data);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
+  const handleClick = async (e) => {
+    // console.log(username)
+    e.preventDefault()
+    const res = await fetch('/api/github', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username
+      }),
+    });
+
+    const response = await res.json();
+    // console.log(response)
 
     setData({
       url: response.username.data.html_url,
@@ -37,7 +72,6 @@ export default function Home() {
     })
 
     setAllRepos(response.allrepos.data)
-    console.log(response.allrepos.data[1].name)
   }
 
   return (
@@ -63,26 +97,26 @@ export default function Home() {
 
         {/* DISPLAY STATS */}
         <div className="flex space-y-4 md:space-y-0 md:space-x-16  flex-col md:flex-row  justify-center items-center pt-14 text-white text-xl ">
-          <div className="bg-black w-52 p-5 rounded-xl hover:scale-105 duration-200 cursor-pointer" >
+          <div className="bg-black w-52 p-5 rounded-xl" >
             <label className='font-bold tracking-wider'>REPOSITORIES</label>
             <h1 className='text-lg'>{data ? data.repos : "Loading..."}</h1>
           </div>
-          <div className="bg-black w-52 p-5 flex-col rounded-xl hover:scale-105 duration-200 cursor-pointer">
+          <div className="bg-black w-52 p-5 flex-col rounded-xl">
             <label className='font-bold tracking-wider'>FOLLOWERS</label>
             <h1 className='text-lg'>{data ? data.followers : "Loading..."}</h1>
           </div>
 
-          <div className="bg-black w-52 p-5 rounded-xl hover:scale-105 duration-200 cursor-pointer">
+          <div className="bg-black w-52 p-5 rounded-xl">
             <label className='font-bold tracking-wider'>STARRED</label>
             <h1 className='text-lg'>{data ? data.starred : "Loading..."}</h1>
           </div>
         </div>
 
         {/* ALL REPOSITORIES */}
-        <div className='flex flex-col mx-10 lg:mx-60 pt-16 pb-10'>
+        <div className='flex flex-col mx-10 xl:mx-60 pt-16 pb-10'>
           {allrepos ? <h1 className='uppercase font-bold text-2xl mb-5 text-white'>Repositories</h1> : ""}
-          {allrepos ? Object.keys(allrepos).map((data,index) => (
-            <Link key={index} href={allrepos[data].html_url}>
+          {allrepos ? Object.keys(allrepos).map((data) => (
+            <Link href={allrepos[data].html_url}>
               <div className='bg-gray-600 text-white rounded-lg p-5 mt-2 hover:scale-105 duration-300 '>
                 <h1 className=''><span className='font-bold text-lg'>{Number(data) + 1}. Title : </span> {allrepos[data].name}</h1>
                 <p> <span className='font-bold text-lg'> Description  :</span> {allrepos[data].description}</p>
@@ -93,7 +127,7 @@ export default function Home() {
         </div>
       </div>
 
-      <footer className='h-[8.2rem] bg-slate-900 text-white flex justify-center items-center text-xl'>
+      <footer className='h-32 bg-slate-900 text-white flex justify-center items-center text-xl'>
         <p>Made with ❣️ by <a href="https://github.com/ompanchwate/" className='hover:underline hover:underline-offset-4'>Om Panchwate</a> </p>
       </footer>
     </>
